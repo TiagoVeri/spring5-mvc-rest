@@ -14,18 +14,13 @@ import guru.springframework.repositories.CustomerRepository;
 @Service
 public class CustomerServiceImpl implements CustomerService {
 
-	private CustomerMapper customerMapper;
-    private CustomerRepository customerRepository;
-    
-    @Autowired
-    public void setCustomerMapper(CustomerMapper customerMapper) {
-        this.customerMapper = customerMapper;
-}
+	private final CustomerMapper customerMapper;
+    private final CustomerRepository customerRepository;
 
-    @Autowired
-    public void setCustomerRepository(CustomerRepository customerRepository) {
+    public CustomerServiceImpl(CustomerMapper customerMapper, CustomerRepository customerRepository) {
+        this.customerMapper = customerMapper;
         this.customerRepository = customerRepository;
-}
+    }
     
     
 	@Override
@@ -42,13 +37,16 @@ public class CustomerServiceImpl implements CustomerService {
 				.collect(Collectors.toList());
 	}
 
-	
-
 	@Override
 	public CustomerDTO getCustomerById(Long id) {
 		
 		return customerRepository.findById(id)
 				.map(customerMapper :: customerToCustomerDTO)
+				.map(customerDTO -> {
+					//set API URL
+					customerDTO.setCustomerUrl("/api/v1/customer/" + id);
+					return customerDTO;
+				})
 				.orElseThrow(RuntimeException :: new); //todo implement better exception handling
 	}
 	
@@ -77,6 +75,27 @@ public class CustomerServiceImpl implements CustomerService {
 		customer.setId(id);
 		
 		return saveAndReturnDTO(customer);
+	}
+
+	//update only one information if the user want it.
+	@Override
+	public CustomerDTO patchCustomer(Long id, CustomerDTO customerDTO) {
+		return customerRepository.findById(id).map(customer -> {
+			
+			if(customerDTO.getFirstname() != null) {
+				customer.setFirstname(customerDTO.getFirstname());
+			}
+			
+			if(customerDTO.getLastname() != null) {
+				customer.setLastname(customerDTO.getLastname());
+			}
+			
+			CustomerDTO returnDto = customerMapper.customerToCustomerDTO(customerRepository.save(customer));
+			
+			returnDto.setCustomerUrl("/api/v1/customer/" + id);
+			
+			return returnDto;
+		}).orElseThrow(RuntimeException :: new); //todo implement better exception handling;
 	}
 
 }
