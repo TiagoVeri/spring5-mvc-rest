@@ -13,13 +13,12 @@ import guru.springframework.repositories.CategoryRepository;
 public class CategoryServiceImpl implements CategoryService {
 
 	private final CategoryMapper categoryMapper;
-	private final CategoryRepository categoryRepository;
-	
-	
-	public CategoryServiceImpl(CategoryMapper categoryMapper, CategoryRepository categoryRepository) {
-		this.categoryMapper = categoryMapper;
-		this.categoryRepository = categoryRepository;
-	}
+    private final CategoryRepository categoryRepository;
+
+    public CategoryServiceImpl(CategoryMapper categoryMapper, CategoryRepository categoryRepository) {
+        this.categoryMapper = categoryMapper;
+        this.categoryRepository = categoryRepository;
+}
 
 	@Override
 	public List<CategoryDTO> getAllCategories() {

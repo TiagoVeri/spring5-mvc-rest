@@ -6,7 +6,7 @@ import org.mapstruct.factory.Mappers;
 import guru.springframework.api.v1.model.CategoryDTO;
 import guru.springframework.domain.Category;
 
-@Mapper(componentModel = "spring")
+@Mapper
 public interface CategoryMapper {
 
 	CategoryMapper INSTANCE = Mappers.getMapper(CategoryMapper.class);
