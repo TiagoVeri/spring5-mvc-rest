@@ -1,6 +1,8 @@
 package guru.springframework.services;
 
 
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.ArgumentMatchers.*;
 import static org.junit.Assert.assertEquals;
@@ -10,6 +12,7 @@ import java.util.List;
 
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.test.web.servlet.MockMvc;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -26,6 +29,7 @@ public class CustomerServiceImplTest {
 	CustomerMapper customerMapper = CustomerMapper.INSTANCE;
 	
 	CustomerServiceImpl customerService;
+	
 	
 	@Before
     public void setUp() throws Exception {
@@ -118,6 +122,17 @@ public class CustomerServiceImplTest {
 		assertEquals("/api/v1/customer/1", savedDto.getCustomerUrl());
 		
 	}
+	
+	@Test
+	public void deleteCustomerById() throws Exception {
+		
+		Long id = 1L;
+		
+		customerService.deleteCustomerById(id);
+		
+		verify(customerRepository,times(1)).deleteById(anyLong());
+	}
+	
 	
 	
 }
